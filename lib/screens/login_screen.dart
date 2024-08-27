@@ -14,6 +14,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   Color forgotPasswordColor = Colors.black;
   Color registerColor = Colors.black;
+  bool isHovering = false;
+  bool isClicked = false;
+  bool obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
             bottom: 0,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF5F2F2),
-                borderRadius: const BorderRadius.only(
+              decoration: const BoxDecoration(
+                color: Color(0xFFF5F2F2),
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20.0),
                   topRight: Radius.circular(20.0),
                 ),
@@ -48,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 80),
-                  Text(
+                  const Text(
                     'Halo, Selamat Datang!',
                     style: TextStyle(
                       fontFamily: 'Poppins',
@@ -58,8 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Teks "Silahkan masukkan data anda untuk dapat akses"
-                  Text(
+                  const Text(
                     'Silahkan masukkan data anda untuk dapat akses',
                     style: TextStyle(
                       fontFamily: 'Poppins',
@@ -68,7 +70,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Input Username
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
@@ -91,26 +92,34 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Input Password
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15.0),
                     ),
-                    child: const TextField(
-                      obscureText: true,
+                    child: TextField(
+                      obscureText: obscureText,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(
+                        prefixIcon: const Icon(
                           Icons.lock,
                           color: Colors.grey,
                         ),
-                        suffixIcon: Icon(
-                          Icons.visibility,
-                          color: Colors.grey,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              obscureText = !obscureText;
+                            });
+                          },
                         ),
                         hintText: 'Masukkan Password Anda',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Colors.grey,
                           fontFamily: 'Poppins',
                         ),
@@ -119,7 +128,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Lupa Password
                   Align(
                     alignment: Alignment.centerRight,
                     child: MouseRegion(
@@ -135,13 +143,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: GestureDetector(
                         onTap: () {
-                          setState(() {
-                            forgotPasswordColor = const Color(0xFF0546FF);
-                          });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ForgotPasswordScreen(),
+                              builder: (context) =>
+                                  const ForgotPasswordScreen(),
                             ),
                           );
                         },
@@ -157,9 +163,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Tombol Login
                   GestureDetector(
-                    onTap: () {
+                    onTapDown: (_) {
+                      setState(() {
+                        isClicked = true;
+                      });
+                    },
+                    onTapUp: (_) {
+                      setState(() {
+                        isClicked = false;
+                        isHovering = false;
+                      });
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -167,28 +181,52 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       );
                     },
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0546FF),
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 18,
+                    child: MouseRegion(
+                      onEnter: (_) {
+                        setState(() {
+                          isHovering = true;
+                        });
+                      },
+                      onExit: (_) {
+                        setState(() {
+                          isHovering = false;
+                        });
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 100.0),
+                        decoration: BoxDecoration(
+                          color: isClicked
+                              ? const Color(0xFF00CEE8)
+                              : (isHovering
+                                  ? Colors.white
+                                  : const Color(0xFF0546FF)),
+                          borderRadius: BorderRadius.circular(15.0),
+                          border: Border.all(
+                            color: isClicked
+                                ? Colors.white
+                                : const Color(0xFF0546FF),
+                            width: 2.0,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                              color: isHovering
+                                  ? const Color(0xFF0546FF)
+                                  : Colors.white,
+                              fontSize: 18,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Tombol "Sign in with Google"
                   GestureDetector(
                     onTap: () {
                       // Tambahkan logika sign in dengan Google di sini
@@ -208,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              'images/google.png', // Ganti dengan path ikon Google
+                              'images/google.png',
                               height: 20.0,
                               width: 20.0,
                             ),
@@ -228,7 +266,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Teks Register
                   Center(
                     child: MouseRegion(
                       onEnter: (_) {
@@ -244,7 +281,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: RichText(
                         text: TextSpan(
                           text: "Don't have an account? ",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontFamily: 'Poppins',
                             color: Colors.black,
                           ),
@@ -264,7 +301,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const RegisterScreen(),
+                                      builder: (context) =>
+                                          const RegisterScreen(),
                                     ),
                                   );
                                 },
