@@ -16,7 +16,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0546FF), // Blue metallic
+      backgroundColor: const Color(0xFF0546FF),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
